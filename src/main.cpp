@@ -1,128 +1,106 @@
-#include <SFML/Graphics.hpp>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 
-#pragma region imgui
-#include "imgui.h"
-#include "imgui-SFML.h"
-#include "imguiThemes.h"
-#pragma endregion
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+int main() {
+    // Initialize GLFW
+    if (!glfwInit()) {
+        std::cerr << "Failed to initialize GLFW" << std::endl;
+        return -1;
+    }
+
+    // Set OpenGL version to 3.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Create a window
+    GLFWwindow* window = glfwCreateWindow(800, 600, "GLcraft", NULL, NULL);
+    if (!window) {
+        std::cerr << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+
+    // Initialize Glad
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Failed to initialize Glad" << std::endl;
+        return -1;
+    }
+
+    // Set viewport and resize callback
+    glViewport(0, 0, 800, 600);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // Main loop
+    while (!glfwWindowShouldClose(window)) {
+        // Clear the screen
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-//if you want to load OpenGL
-//#include <glad/glad.h>
-//#include <errorReporting.h>
+        // Cube vertices
+        float vertices[] = {
+            // Front face
+            -0.5f, -0.5f,  0.5f,
+             0.5f, -0.5f,  0.5f,
+             0.5f,  0.5f,  0.5f,
+            -0.5f,  0.5f,  0.5f,
+            // Back face
+            -0.5f, -0.5f, -0.5f,
+             0.5f, -0.5f, -0.5f,
+             0.5f,  0.5f, -0.5f,
+            -0.5f,  0.5f, -0.5f
+        };
 
-int main()
-{
-	sf::RenderWindow window(sf::VideoMode(500, 500), "SFML works!");
+        // Indices for the cube (using EBO)
+        unsigned int indices[] = {
+            // Front face
+            0, 1, 2, 2, 3, 0,
+            // Back face
+            4, 5, 6, 6, 7, 4,
+            // Left face
+            4, 0, 3, 3, 7, 4,
+            // Right face
+            1, 5, 6, 6, 2, 1,
+            // Top face
+            3, 2, 6, 6, 7, 3,
+            // Bottom face
+            4, 5, 1, 1, 0, 4
+        };
 
+        // Set up VAO, VBO, and EBO
+        unsigned int VAO, VBO, EBO;
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
 
+        glBindVertexArray(VAO);
 
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	//if you want to load OpenGL.
-	// Note: SFML also uses OpenGL so it will interfere with your code.
-	// If you want to draw both with SFML and your OpenGL code, you will have
-	// to fight with it a little.
-	// I found that calling glDisableVertexAttribArray(0); for attributes 0 - 8
-	// solved some issues sometimes
-	//  
-	//if (!gladLoadGLLoader((GLADloadproc)sf::Context::getFunction))
-	//{
-	//	std::cerr << "Failed to initialize GLAD" << std::endl;
-	//	return -1;
-	//}
-	//enableReportGlErrors();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
 
-#pragma region imgui
-	ImGui::SFML::Init(window);
-	//you can use whatever imgui theme you like!
-	//ImGui::StyleColorsDark();				
-	//imguiThemes::yellow();
-	//imguiThemes::gray();
-	imguiThemes::green();
-	//imguiThemes::red();
-	//imguiThemes::gray();
-	//imguiThemes::embraceTheDarkness();
-
-	ImGuiIO &io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-	io.FontGlobalScale = 2.f;
-	ImGuiStyle &style = ImGui::GetStyle();
-	style.Colors[ImGuiCol_WindowBg].w = 0.5f;
-	//style.Colors[ImGuiCol_DockingEmptyBg].w = 0.f;
-#pragma endregion
-
-
-
-	sf::CircleShape shape(100.f);
-	//window.setVerticalSyncEnabled(true);
-	shape.setFillColor(sf::Color::Green);
-
-	sf::Clock clock;
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
 
 
-	while (window.isOpen())
-	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			
-		#pragma region imgui
-			ImGui::SFML::ProcessEvent(window, event);
-		#pragma endregion
+        // Swap buffers and poll events
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
 
-
-			if (event.type == sf::Event::Closed)
-				window.close();
-			else if (event.type == sf::Event::Resized)
-			{
-				// Adjust the viewport when the window is resized
-				sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-				window.setView(sf::View(visibleArea));
-			}
-		}
-
-		//calculate the delta time
-		sf::Time deltaTime = clock.restart();
-		float deltaTimeSeconds = deltaTime.asSeconds();
-
-		//make sure delta time stays within normal bounds, like between one FPS and zero FPS
-		deltaTimeSeconds = std::min(deltaTimeSeconds, 1.f);
-		deltaTimeSeconds = std::max(deltaTimeSeconds, 0.f);
-
-	#pragma region imgui
-		ImGui::SFML::Update(window, deltaTime);
-
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, {});
-		ImGui::PushStyleColor(ImGuiCol_DockingEmptyBg, {});
-		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-		ImGui::PopStyleColor(2);
-	#pragma endregion
-
-
-		ImGui::Begin("Hello, world!");
-		ImGui::Button("Look at this pretty button!");
-		ImGui::Text("Hello!");
-		ImGui::End();
-
-		//game code....
-		window.clear();
-		window.draw(shape);
-
-
-	#pragma region imgui
-		ImGui::SFML::Render(window);
-	#pragma endregion
-
-		window.display();
-	}
-
-#pragma region imgui
-	ImGui::SFML::Shutdown();
-#pragma endregion
-
-	return 0;
+    // Clean up
+    glfwTerminate();
+    return 0;
 }

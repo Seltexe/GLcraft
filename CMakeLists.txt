@@ -38,6 +38,7 @@ add_subdirectory(thirdparty/SFML-2.6.1)
 add_subdirectory(thirdparty/imgui-docking)
 add_subdirectory(thirdparty/imgui-sfml-2.6.x)
 add_subdirectory(thirdparty/glad)
+add_subdirectory(thirdparty/glfw-3.4)
 
 
 # MY_SOURCES is defined to be a list of all the source files for my game 
@@ -91,6 +92,6 @@ target_link_libraries("${CMAKE_PROJECT_NAME}"
 	sfml-audio 
 	sfml-network
 	imgui
-	ImGui-SFML::ImGui-SFML
 	glad
+	glfw
 )
