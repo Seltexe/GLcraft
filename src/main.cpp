@@ -14,18 +14,21 @@ int main() {
     }
 
     // Set OpenGL version to 3.3
+    glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+
     // Create a window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "GLcraft", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "GLcraft", nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
     glfwMakeContextCurrent(window);
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
 
     // Initialize Glad
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -34,11 +37,12 @@ int main() {
     }
 
     // Set viewport and resize callback
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1280, 720);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Main loop
     while (!glfwWindowShouldClose(window)) {
+
         // Clear the screen
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
