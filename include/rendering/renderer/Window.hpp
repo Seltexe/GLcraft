@@ -4,7 +4,15 @@
 
 namespace Ge
 {
-	class IWindow
+	struct SWindowInfo
+	{
+		int w_height;
+		int w_lenght;
+		const char* w_title;
+	};
+
+
+	class Window
 	{
 	private:
 
@@ -13,8 +21,8 @@ namespace Ge
 
 	public:
 
-		virtual ~IWindow() = default;
-		virtual void Initialize() = 0;
+		virtual ~Window() = default;
+		virtual void Initialize(const SWindowInfo& _windowInfo) = 0;
 		virtual void Release() = 0;
 
 		GLFWwindow* GetHandle();
