@@ -6,8 +6,8 @@ namespace Ge
 {
 	struct SWindowInfo
 	{
-		int w_height;
 		int w_lenght;
+		int w_height;
 		const char* w_title;
 	};
 
@@ -18,6 +18,7 @@ namespace Ge
 
 	protected:
 		GLFWwindow* m_window = nullptr;
+		bool m_initialized = false;
 
 	public:
 

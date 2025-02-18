@@ -1,6 +1,6 @@
 #pragma once
-#include "../rendering/renderer/Window.hpp"
-#include <exception>
+#include "../rendering/renderer/lWindow.hpp"
+#include <stdexcept>
 
 
 namespace Ge

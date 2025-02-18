@@ -1,47 +1,30 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
+#include "../rendering/renderer/OpenGL33/OpenGL33Window.hpp"
 
 int main() {
-    // Initialize GLFW
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW" << std::endl;
+    Ge::OpenGL33Window window;
+    Ge::SWindowInfo windowInfo{};
+
+    windowInfo.w_lenght = 1280;
+    windowInfo.w_height = 720;
+    windowInfo.w_title = "GLCraft";
+
+    try
+    {
+        window.Initialize(windowInfo);
+    }
+    catch (std::runtime_error& error)
+    {
+        std::cerr << "Error: " << error.what() << std::endl;
         return -1;
     }
 
-    // Set OpenGL version to 3.3
-    glfwWindowHint(GLFW_SAMPLES, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-
-    // Create a window
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "GLcraft", nullptr, nullptr);
-    if (!window) {
-        std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_TRUE);
-
-    // Initialize Glad
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "Failed to initialize Glad" << std::endl;
-        return -1;
-    }
-
-    // Set viewport and resize callback
-    glViewport(0, 0, 1280, 720);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    GLFWwindow* p_window = window.GetHandle();
 
     // Main loop
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(p_window)) {
 
         // Clear the screen
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -100,11 +83,12 @@ int main() {
 
 
         // Swap buffers and poll events
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(p_window);
         glfwPollEvents();
     }
 
     // Clean up
-    glfwTerminate();
+    window.Release();
+
     return 0;
 }
