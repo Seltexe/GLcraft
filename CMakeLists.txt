@@ -24,12 +24,6 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE) #link time optimization
 
-# Ensure SFML is built as static libraries
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build SFML as static libraries" FORCE)
-
-#for imgui-sfml
-set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui-docking/imgui")
-
 if(MSVC) 
 add_compile_options(/arch:AVX2) #make sure SIMD optimizations take place
 endif()
@@ -37,12 +31,8 @@ endif()
 project(mygame)
 
 
-
-
-#Add SFML, and here you would add other libraries if needed!
-add_subdirectory(thirdparty/SFML-2.6.1)
+#Add libraries here
 add_subdirectory(thirdparty/imgui-docking)
-add_subdirectory(thirdparty/imgui-sfml-2.6.x)
 add_subdirectory(thirdparty/glad)
 add_subdirectory(thirdparty/glfw-3.4)
 
@@ -87,16 +77,18 @@ if(MSVC) # If using the VS compiler...
 endif()
 
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/rendering/")
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/rendering/renderer/")
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/rendering/renderer/OpenGL33/")
 
 
+target_precompile_headers(${PROJECT_NAME}
+	PRIVATE
+		"${CMAKE_SOURCE_DIR}/include/pch.h"
+)
 
 # Link SFML libraries statically, Here wou would add other libraries!
 target_link_libraries("${CMAKE_PROJECT_NAME}" 
-	sfml-graphics 
-	sfml-window 
-	sfml-system 
-	sfml-audio 
-	sfml-network
 	imgui
 	glad
 	glfw
