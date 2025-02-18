@@ -11,8 +11,7 @@ namespace Ge
 	{
         // Initialize GLFW
         if (!glfwInit()) {
-            std::cerr << "Failed to initialize GLFW" << std::endl;
-            return -1;
+            throw std::runtime_error("Failed to initialize GLFW!");
         }
 
         // Set OpenGL version to 3.3
