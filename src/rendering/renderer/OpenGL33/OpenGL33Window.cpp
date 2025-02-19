@@ -14,6 +14,10 @@ namespace Ge
 
 	void OpenGL33Window::Initialize(const SWindowInfo& _windowInfo)
 	{
+        if (m_initialized)
+            Release();
+
+
         // Initialize GLFW
         if (!glfwInit()) {
             throw std::runtime_error("Failed to initialize GLFW!");
@@ -51,8 +55,13 @@ namespace Ge
 
 	void OpenGL33Window::Release()
 	{
-        glfwTerminate();
-        m_window = nullptr;
+        if (m_initialized)
+        {
+            glfwTerminate();
+            m_window = nullptr;
+
+            m_initialized = false;
+        }
 	}
 }
 
