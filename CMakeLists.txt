@@ -28,7 +28,7 @@ if(MSVC)
 add_compile_options(/arch:AVX2) #make sure SIMD optimizations take place
 endif()
 
-project(mygame)
+project(GLCraft)
 
 
 #Add libraries here
