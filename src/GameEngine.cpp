@@ -106,8 +106,8 @@ namespace Ge
 
 		// Initialize shader
 		simpleShader.init(
-			FileManager::read("../simple.vs"), // Vertex shader source
-			FileManager::read("../simple.fs")  // Fragment shader source
+			FileManager::read("../../../include/shaders/simple.vs"), // Vertex shader source
+			FileManager::read("../../../include/shaders/simple.fs")  // Fragment shader source
 		);
 
 		// Get screen dimensions
