@@ -77,9 +77,11 @@ if(MSVC) # If using the VS compiler...
 endif()
 
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/glm/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/rendering/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/rendering/renderer/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/rendering/renderer/OpenGL33/")
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/shaders/")
 
 
 target_precompile_headers(${PROJECT_NAME}
@@ -87,7 +89,6 @@ target_precompile_headers(${PROJECT_NAME}
 		"${CMAKE_SOURCE_DIR}/include/pch.h"
 )
 
-# Link SFML libraries statically, Here wou would add other libraries!
 target_link_libraries("${CMAKE_PROJECT_NAME}" 
 	imgui
 	glad
