@@ -32,6 +32,7 @@ project(GLCraft)
 
 
 #Add libraries here
+cmake_policy(SET CMP0000 NEW)
 add_subdirectory(thirdparty/imgui-docking)
 add_subdirectory(thirdparty/glad)
 add_subdirectory(thirdparty/glfw-3.4)
@@ -41,6 +42,7 @@ add_subdirectory(thirdparty/glfw-3.4)
 # DON'T ADD THE SOURCES BY HAND, they are already added with this macro
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
+file(COPY include/shaders DESTINATION ${CMAKE_BINARY_DIR}/)
 
 add_executable("${CMAKE_PROJECT_NAME}")
 

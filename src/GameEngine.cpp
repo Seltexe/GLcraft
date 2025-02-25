@@ -21,11 +21,11 @@ namespace Ge
 		// Each vertex has a position (x, y, z) and a color (r, g, b)
 		float triangleVertices[] = {
 			0.0f, 1.0f, 0.0f,  // Position of vertex 1
-			1.0f, 0.0f, 0.0f,  // Color of vertex 1 (Red)
+			1.0f, 0.8f, 0.0f,  // Color of vertex 1 (Red)
 			-1.f, -0.5f, 0.0f, // Position of vertex 2
-			0.0f, 1.0f, 0.0f,  // Color of vertex 2 (Green)
+			1.0f, 0.8f, 0.0f,  // Color of vertex 2 (Green)
 			1.0f, -0.5f, 0.0f, // Position of vertex 3
-			0.0f, 0.0f, 1.0f   // Color of vertex 3 (Blue)
+			1.0f, 0.8f, 0.0f,   // Color of vertex 3 (Blue)
 		};
 
 		// Define the indices that represent how to draw the triangle using the vertices
@@ -69,6 +69,8 @@ namespace Ge
 	}
 
 
+
+
 	void GameEngine::Initialize(const SGameEngineCreateInfo& _GameEngineCreateInfo)
 	{
 		if (m_initialized)
@@ -106,8 +108,8 @@ namespace Ge
 
 		// Initialize shader
 		simpleShader.init(
-			FileManager::read("../../../include/shaders/simple.vs"), // Vertex shader source
-			FileManager::read("../../../include/shaders/simple.fs")  // Fragment shader source
+			FileManager::read("shaders/simple.vs"), // Vertex shader source
+			FileManager::read("shaders/simple.fs")  // Fragment shader source
 		);
 
 		// Get screen dimensions
@@ -192,7 +194,7 @@ namespace Ge
 			}
 
 			// Clear the screen
-			glClearColor(red, green, blue, 1.0f);
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// Render the triangle
@@ -203,8 +205,14 @@ namespace Ge
 				// Update model matrix for rotating the triangle on Z-axis
 				model = glm::rotate(
 					glm::mat4(1.f),
-					std::sin(current * 0.8f) / 4.f,
-					glm::vec3(0.f, 0.f, -1.f));
+					current * 7.f,
+					glm::vec3(0.f, 1.f, 0.f));
+
+
+				model = glm::rotate(
+					model,
+					current * 4.f,
+					glm::vec3(1.f, 0.f, 0.f));
 
 				// Set shader uniforms
 				simpleShader.setMat4("u_model", model);
