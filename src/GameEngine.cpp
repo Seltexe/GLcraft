@@ -68,7 +68,105 @@ namespace Ge
 		glBindVertexArray(0);
 	}
 
+	void createSquare(unsigned int& vao, unsigned int& vbo, unsigned int& ebo)
+	{
+		// Define the vertices and their associated colors for the triangle
+		// Each vertex has a position (x, y, z) and a color (r, g, b)
+		float squareVertices[] = {
+			// Positions          // Couleurs
+			-1.0f,  1.0f, 0.0f,  1.0f, 0.8f, 0.0f, // Haut-gauche
+			 1.0f,  1.0f, 0.0f,  1.0f, 0.8f, 0.0f, // Haut-droit
+			-1.0f, -1.0f, 0.0f,  1.0f, 0.8f, 0.0f, // Bas-gauche
+			 1.0f, -1.0f, 0.0f,  1.0f, 0.8f, 0.0f  // Bas-droit
+		};
 
+		// Define the indices that represent how to draw the square using the vertices
+		unsigned int squareIndices[] = {
+		0, 1, 2, // Premier triangle
+		1, 3, 2  // Deuxième triangle
+		};
+
+		// Generate a Vertex Array Object (VAO), Vertex Buffer Object (VBO),
+		// and Element Buffer Object (EBO) to manage and store OpenGL state
+		glGenVertexArrays(1, &vao);
+		glGenBuffers(1, &vbo);
+		glGenBuffers(1, &ebo);
+
+		// Bind the VAO to start recording the OpenGL state for this square
+		glBindVertexArray(vao);
+
+		// Bind the VBO to the GL_ARRAY_BUFFER target to store vertex data
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		// Upload the vertex data to the GPU
+		glBufferData(GL_ARRAY_BUFFER, sizeof(squareVertices), squareVertices, GL_STATIC_DRAW);
+
+		// Bind the EBO to the GL_ELEMENT_ARRAY_BUFFER target to store index data
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		// Upload the index data to the GPU
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(squareIndices), squareIndices, GL_STATIC_DRAW);
+
+		// Specify the layout of the vertex data:
+		// Attribute 0: Position (x, y, z) - 6 floats, starting at offset 0
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0); // Enable attribute 0
+
+		// Attribute 1: Color (r, g, b) - 6 floats, starting at offset 6 * sizeof(float)
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1); // Enable attribute 1
+
+		// Unbind the VBO (optional, to prevent accidental modification of VBO data)
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		// Unbind the VAO (optional, to prevent accidental modification of VAO state)
+		glBindVertexArray(0);
+	}
+
+	void createCube(unsigned int& vao, unsigned int& vbo, unsigned int& ebo)
+	{
+		float cubeVertices[] = {
+			// Positions          // Colors
+			-1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f, // 0 - Red
+			 1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.0f, // 1 - Green
+			 1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f, // 2 - Blue
+			-1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 0.0f, // 3 - Yellow
+			-1.0f, -1.0f,  1.0f,  1.0f, 0.0f, 1.0f, // 4 - Magenta
+			 1.0f, -1.0f,  1.0f,  0.0f, 1.0f, 1.0f, // 5 - Cyan
+			 1.0f,  1.0f,  1.0f,  1.0f, 1.0f, 1.0f, // 6 - White
+			-1.0f,  1.0f,  1.0f,  0.0f, 0.0f, 0.0f  // 7 - Black
+		};
+
+		unsigned int cubeIndices[] = {
+			0, 1, 2,  2, 3, 0,  // Back face
+			1, 5, 6,  6, 2, 1,  // Right face
+			5, 4, 7,  7, 6, 5,  // Front face
+			4, 0, 3,  3, 7, 4,  // Left face
+			3, 2, 6,  6, 7, 3,  // Top face
+			4, 5, 1,  1, 0, 4   // Bottom face
+		};
+
+		glGenVertexArrays(1, &vao);
+		glGenBuffers(1, &vbo);
+		glGenBuffers(1, &ebo);
+
+		glBindVertexArray(vao);
+
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
+
+		// Position attribute
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		// Color attribute
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
 
 
 	void GameEngine::Initialize(const SGameEngineCreateInfo& _GameEngineCreateInfo)
@@ -104,7 +202,7 @@ namespace Ge
 		// Simple triangle
 		// Create triangle
 		
-		createTriangle(vao, vbo, ebo);
+		createCube(vao, vbo, ebo);
 
 		// Initialize shader
 		simpleShader.init(
@@ -118,7 +216,7 @@ namespace Ge
 		glfwGetFramebufferSize(p_window, &screenWidth, &screenHeight);
 
 		// Camera setup
-		glm::vec3 cameraPosition(0.f, 0.f, 2.f);       // Camera is placed at (0, 0, 2)
+		glm::vec3 cameraPosition(0.f, 0.f, 5.f);       // Camera is placed at (0, 0, 2)
 		glm::vec3 cameraViewDirection(0.f, 0.f, -1.f); // Camera looks towards the negative Z-axis
 
 		// Model matrix
@@ -171,6 +269,8 @@ namespace Ge
 		double previous = glfwGetTime();
 		double SECONDS_PER_UPDATE = 1.0 / 60.0;
 
+		glEnable(GL_DEPTH_TEST);
+
 		// Main loop
 		while (!glfwWindowShouldClose(p_window)) {
 
@@ -205,13 +305,13 @@ namespace Ge
 				// Update model matrix for rotating the triangle on Z-axis
 				model = glm::rotate(
 					glm::mat4(1.f),
-					current * 7.f,
+					current * 4.f,
 					glm::vec3(0.f, 1.f, 0.f));
 
 
 				model = glm::rotate(
 					model,
-					current * 4.f,
+					current * 2.f,
 					glm::vec3(1.f, 0.f, 0.f));
 
 				// Set shader uniforms
@@ -223,7 +323,7 @@ namespace Ge
 				glBindVertexArray(vao);
 
 				// Issue the draw command
-				glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); // Change this if you want to draw multiple verticies
 
 				// Unbind the VAO
 				glBindVertexArray(0);
