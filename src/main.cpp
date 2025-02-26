@@ -1,6 +1,9 @@
 #include <iostream>
 #include "GameEngine.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 int main() 
 {
     Ge::SWindowInfo window_create_info{};

@@ -9,6 +9,37 @@
 
 namespace Ge
 {
+	Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f);
+	float lastX = 800 / 2.0f;
+	float lastY = 600 / 2.0f;
+	bool firstMouse = true;
+
+	void processInput(GLFWwindow* window, float deltaTime) {
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			camera.ProcessKeyboard(FORWARD, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			camera.ProcessKeyboard(BACKWARD, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			camera.ProcessKeyboard(LEFT, deltaTime);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			camera.ProcessKeyboard(RIGHT, deltaTime);
+	}
+
+	void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+		if (firstMouse) {
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+
+		float xOffset = xpos - lastX;
+		float yOffset = lastY - ypos; // Reversed Y-axis
+
+		lastX = xpos;
+		lastY = ypos;
+
+		camera.ProcessMouseMovement(xOffset, yOffset);
+	}
 
 	GameEngine::~GameEngine()
 	{
@@ -172,6 +203,7 @@ namespace Ge
 		unsigned int textureID;
 		glGenTextures(1, &textureID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+		stbi_set_flip_vertically_on_load(false);
 
 		int width, height, nrChannels;
 		for (unsigned int i = 0; i < faces.size(); i++) {
@@ -298,6 +330,11 @@ namespace Ge
 			FileManager::read("shaders/simple.fs")  // Fragment shader source
 		);
 
+		skyboxShader.init(
+			FileManager::read("shaders/skybox.vs"), // Vertex shader source
+			FileManager::read("shaders/skybox.fs")  // Fragment shader source
+		);
+
 		// Get screen dimensions
 		GLFWwindow* p_window = mp_rendering_engine->GetRenderer()->GetWindow()->GetHandle();
 		int screenWidth, screenHeight;
@@ -329,12 +366,12 @@ namespace Ge
 		// skybox
 
 		std::vector<std::string> faces = {
-			"skybox/px.jpg",
-			"skybox/nx.jpg",
-			"skybox/nz.jpg",
-			"skybox/pz.jpg",
-			"skybox/ny.jpg",
-			"skybox/py.jpg"
+			"skybox/px.png",
+			"skybox/nx.png",
+			"skybox/nz.png",
+			"skybox/pz.png",
+			"skybox/ny.png",
+			"skybox/py.png"
 		};
 		skyboxTexture = loadCubemap(faces);
 		createSkybox(skyboxVAO, skyboxVBO);
@@ -367,6 +404,10 @@ namespace Ge
 
 		GLFWwindow* p_window = mp_rendering_engine->GetRenderer()->GetWindow()->GetHandle();
 
+		glfwSetCursorPosCallback(p_window, mouse_callback);
+		glfwSetInputMode(p_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide cursor for FPS-like movement
+
+
 		// Timers
 		double lag = 0.0;
 		double previous = glfwGetTime();
@@ -394,7 +435,10 @@ namespace Ge
 			{
 				// Game Logic
 				lag -= SECONDS_PER_UPDATE;
+				processInput(p_window, elapsed);
+				view = camera.GetViewMatrix();
 			}
+
 
 			// Clear the screen
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -422,7 +466,7 @@ namespace Ge
 				simpleShader.use();
 
 				// Update model matrix for rotating the triangle on Z-axis
-				model = glm::rotate(
+				/*model = glm::rotate(
 					glm::mat4(1.f),
 					current * 8.f,
 					glm::vec3(0.f, 1.f, 0.f));
@@ -431,7 +475,7 @@ namespace Ge
 				model = glm::rotate(
 					model,
 					current * 3.f,
-					glm::vec3(1.f, 0.f, 0.f));
+					glm::vec3(1.f, 0.f, 0.f));*/
 
 				// Set shader uniforms
 				simpleShader.setMat4("u_model", model);
