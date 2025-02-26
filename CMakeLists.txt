@@ -43,6 +43,7 @@ add_subdirectory(thirdparty/glfw-3.4)
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 file(COPY include/shaders DESTINATION ${CMAKE_BINARY_DIR}/)
+file(COPY resources/skybox DESTINATION ${CMAKE_BINARY_DIR}/)
 
 add_executable("${CMAKE_PROJECT_NAME}")
 

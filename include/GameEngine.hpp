@@ -5,6 +5,10 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <vector>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 #ifndef M_PI_2
 #define M_PI_2 1.57079632679489661923
@@ -33,10 +37,15 @@ namespace Ge
 	private:
 
 		Shader simpleShader;
+		Shader skyboxShader;
+		unsigned int skyboxTexture;
+
+
 		bool m_initialized = false;
 		RenderingEngine* mp_rendering_engine;
 
 		unsigned int vao, vbo, ebo;
+		unsigned int skyboxVAO, skyboxVBO;
 		glm::mat4 model;
 		glm::mat4 view;
 		glm::mat4 projection;

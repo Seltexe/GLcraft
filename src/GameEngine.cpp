@@ -168,6 +168,94 @@ namespace Ge
 		glBindVertexArray(0);
 	}
 
+	unsigned int loadCubemap(std::vector<std::string> faces) {
+		unsigned int textureID;
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+		int width, height, nrChannels;
+		for (unsigned int i = 0; i < faces.size(); i++) {
+			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+			if (data) {
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+					0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+				stbi_image_free(data);
+			}
+			else {
+				std::cerr << "Failed to load cubemap texture at " << faces[i] << std::endl;
+				stbi_image_free(data);
+			}
+		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		return textureID;
+	}
+
+	void createSkybox(unsigned int& skyboxVAO, unsigned int& skyboxVBO) {
+		float skyboxVertices[] = {
+			// Positions
+			-1.0f,  1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
+			 1.0f,  1.0f, -1.0f,
+			-1.0f,  1.0f, -1.0f,
+
+			-1.0f, -1.0f,  1.0f,
+			-1.0f, -1.0f, -1.0f,
+			-1.0f,  1.0f, -1.0f,
+			-1.0f,  1.0f, -1.0f,
+			-1.0f,  1.0f,  1.0f,
+			-1.0f, -1.0f,  1.0f,
+
+			 1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
+
+			-1.0f, -1.0f,  1.0f,
+			-1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f, -1.0f,  1.0f,
+			-1.0f, -1.0f,  1.0f,
+
+			-1.0f,  1.0f, -1.0f,
+			 1.0f,  1.0f, -1.0f,
+			 1.0f,  1.0f,  1.0f,
+			 1.0f,  1.0f,  1.0f,
+			-1.0f,  1.0f,  1.0f,
+			-1.0f,  1.0f, -1.0f,
+
+			-1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f,  1.0f,
+			 1.0f, -1.0f, -1.0f,
+			 1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f,  1.0f,
+			 1.0f, -1.0f,  1.0f
+		};
+
+		glGenVertexArrays(1, &skyboxVAO);
+		glGenBuffers(1, &skyboxVBO);
+
+		glBindVertexArray(skyboxVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		glBindVertexArray(0);
+	}
+
+
 
 	void GameEngine::Initialize(const SGameEngineCreateInfo& _GameEngineCreateInfo)
 	{
@@ -236,6 +324,21 @@ namespace Ge
 			0.01f,                                    // Near clipping plane
 			100.0f                                    // Far clipping plane
 		);
+
+
+		// skybox
+
+		std::vector<std::string> faces = {
+			"skybox/px.jpg",
+			"skybox/nx.jpg",
+			"skybox/nz.jpg",
+			"skybox/pz.jpg",
+			"skybox/ny.jpg",
+			"skybox/py.jpg"
+		};
+		skyboxTexture = loadCubemap(faces);
+		createSkybox(skyboxVAO, skyboxVBO);
+
 	}
 
 	void GameEngine::Release()
@@ -297,6 +400,22 @@ namespace Ge
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			// Disable depth writing
+			glDepthFunc(GL_LEQUAL);
+
+			skyboxShader.use();
+			skyboxShader.setMat4("u_view", glm::mat4(glm::mat3(view))); // Remove translation
+			skyboxShader.setMat4("u_projection", projection);
+
+			glBindVertexArray(skyboxVAO);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(0);
+
+			// Restore depth function
+			glDepthFunc(GL_LESS);
+
+
 			// Render the triangle
 			{
 				// Activate the shader to use it for rendering
@@ -305,13 +424,13 @@ namespace Ge
 				// Update model matrix for rotating the triangle on Z-axis
 				model = glm::rotate(
 					glm::mat4(1.f),
-					current * 4.f,
+					current * 8.f,
 					glm::vec3(0.f, 1.f, 0.f));
 
 
 				model = glm::rotate(
 					model,
-					current * 2.f,
+					current * 3.f,
 					glm::vec3(1.f, 0.f, 0.f));
 
 				// Set shader uniforms
