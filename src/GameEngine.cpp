@@ -332,8 +332,6 @@ namespace Ge
 
 		std::cout << "Game Engine initialized." << std::endl;
 
-		// Simple triangle
-		// Create triangle
 		
 		createCube(vao, vbo, ebo);
 
