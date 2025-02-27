@@ -366,12 +366,12 @@ namespace Ge
 		// skybox
 
 		std::vector<std::string> faces = {
-			"skybox/px.png",
-			"skybox/nx.png",
-			"skybox/nz.png",
-			"skybox/pz.png",
-			"skybox/ny.png",
-			"skybox/py.png"
+			"skybox/px.png", // Right (+X)
+			"skybox/nx.png", // Left (-X)
+			"skybox/py.png", // Top (+Y)
+			"skybox/ny.png", // Bottom (-Y)
+			"skybox/pz.png", // Front (+Z)
+			"skybox/nz.png"  // Back (-Z)
 		};
 		skyboxTexture = loadCubemap(faces);
 		createSkybox(skyboxVAO, skyboxVBO);
@@ -448,10 +448,12 @@ namespace Ge
 			glDepthFunc(GL_LEQUAL);
 
 			skyboxShader.use();
+			skyboxShader.setInt("skybox", 0);
 			skyboxShader.setMat4("u_view", glm::mat4(glm::mat3(view))); // Remove translation
 			skyboxShader.setMat4("u_projection", projection);
 
 			glBindVertexArray(skyboxVAO);
+			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 			glBindVertexArray(0);
