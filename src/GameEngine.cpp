@@ -203,7 +203,7 @@ namespace Ge
 		unsigned int textureID;
 		glGenTextures(1, &textureID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-		stbi_set_flip_vertically_on_load(false);
+		//stbi_set_flip_vertically_on_load(false);
 
 		int width, height, nrChannels;
 		for (unsigned int i = 0; i < faces.size(); i++) {
@@ -228,7 +228,7 @@ namespace Ge
 		return textureID;
 	}
 
-	void createSkybox(unsigned int& skyboxVAO, unsigned int& skyboxVBO) {
+	void createSkybox(unsigned int& skyboxVAO, unsigned int& skyboxVBO, unsigned int& skyboxEBO) {
 		float skyboxVertices[] = {
 			// Positions
 			-1.0f,  1.0f, -1.0f,
@@ -274,12 +274,25 @@ namespace Ge
 			 1.0f, -1.0f,  1.0f
 		};
 
+		unsigned int cubeIndices[] = {
+			0, 1, 2,  2, 3, 0,  // Back face
+			1, 5, 6,  6, 2, 1,  // Right face
+			5, 4, 7,  7, 6, 5,  // Front face
+			4, 0, 3,  3, 7, 4,  // Left face
+			3, 2, 6,  6, 7, 3,  // Top face
+			4, 5, 1,  1, 0, 4   // Bottom face
+		};
+
 		glGenVertexArrays(1, &skyboxVAO);
 		glGenBuffers(1, &skyboxVBO);
+		glGenBuffers(1, &skyboxEBO);
 
 		glBindVertexArray(skyboxVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
@@ -374,7 +387,7 @@ namespace Ge
 			"skybox/nz.png"  // Back (-Z)
 		};
 		skyboxTexture = loadCubemap(faces);
-		createSkybox(skyboxVAO, skyboxVBO);
+		createSkybox(skyboxVAO, skyboxVBO, skyboxEBO);
 
 	}
 

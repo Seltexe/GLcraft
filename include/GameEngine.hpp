@@ -43,7 +43,7 @@ namespace Ge
 		RenderingEngine* mp_rendering_engine;
 
 		unsigned int vao, vbo, ebo;
-		unsigned int skyboxVAO, skyboxVBO;
+		unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
 		glm::mat4 model;
 		glm::mat4 view;
 		glm::mat4 projection;
