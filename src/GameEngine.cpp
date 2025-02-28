@@ -210,7 +210,7 @@ namespace Ge
 			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
 			if (data) {
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-					0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+					0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 				stbi_image_free(data);
 			}
 			else {
@@ -481,7 +481,7 @@ namespace Ge
 				simpleShader.use();
 
 				// Update model matrix for rotating the triangle on Z-axis
-				/*model = glm::rotate(
+				model = glm::rotate(
 					glm::mat4(1.f),
 					current * 8.f,
 					glm::vec3(0.f, 1.f, 0.f));
@@ -490,7 +490,7 @@ namespace Ge
 				model = glm::rotate(
 					model,
 					current * 3.f,
-					glm::vec3(1.f, 0.f, 0.f));*/
+					glm::vec3(1.f, 0.f, 0.f));
 
 				// Set shader uniforms
 				simpleShader.setMat4("u_model", model);
