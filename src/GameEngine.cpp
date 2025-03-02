@@ -481,7 +481,7 @@ namespace Ge
 				simpleShader.use();
 
 				// Update model matrix for rotating the triangle on Z-axis
-				model = glm::rotate(
+				/*model = glm::rotate(
 					glm::mat4(1.f),
 					current * 8.f,
 					glm::vec3(0.f, 1.f, 0.f));
@@ -490,7 +490,7 @@ namespace Ge
 				model = glm::rotate(
 					model,
 					current * 3.f,
-					glm::vec3(1.f, 0.f, 0.f));
+					glm::vec3(1.f, 0.f, 0.f));*/
 
 				// Set shader uniforms
 				simpleShader.setMat4("u_model", model);
