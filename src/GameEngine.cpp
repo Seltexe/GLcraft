@@ -199,6 +199,7 @@ namespace Ge
 		glBindVertexArray(0);
 	}
 
+
 	unsigned int loadCubemap(std::vector<std::string> faces) {
 		unsigned int textureID;
 		glGenTextures(1, &textureID);
@@ -210,7 +211,7 @@ namespace Ge
 			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
 			if (data) {
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-					0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+					0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 				stbi_image_free(data);
 			}
 			else {
@@ -300,7 +301,18 @@ namespace Ge
 		glBindVertexArray(0);
 	}
 
-
+	std::vector<glm::vec3> initializeCubePositions(int gridSize, float spacing) {
+		std::vector<glm::vec3> positions;
+		for (int x = 0; x < gridSize; ++x) {
+			for (int z = 0; z < gridSize; ++z) {
+				for (int y = 0; y < gridSize; ++y)
+				{
+					positions.emplace_back(x * spacing, y * spacing, z * spacing);
+				}
+			}
+		}
+		return positions;
+	}
 
 	void GameEngine::Initialize(const SGameEngineCreateInfo& _GameEngineCreateInfo)
 	{
@@ -332,9 +344,14 @@ namespace Ge
 
 		std::cout << "Game Engine initialized." << std::endl;
 
+		// Activer le culling de faces
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK); // Cull les faces arrière
+		glFrontFace(GL_CCW); // Les faces avant sont définies dans le sens antihoraire
+
 		// Simple triangle
 		// Create triangle
-		
+
 		createCube(vao, vbo, ebo);
 
 		// Initialize shader
@@ -375,21 +392,20 @@ namespace Ge
 			100.0f                                    // Far clipping plane
 		);
 
-
 		// skybox
 
 		std::vector<std::string> faces = {
-			"skybox/px.png", // Right (+X)
-			"skybox/nx.png", // Left (-X)
-			"skybox/py.png", // Top (+Y)
-			"skybox/ny.png", // Bottom (-Y)
-			"skybox/pz.png", // Front (+Z)
-			"skybox/nz.png"  // Back (-Z)
+			"skybox/right.jpg", // Right (+X)
+			"skybox/left.jpg", // Left (-X)
+			"skybox/top.jpg", // Top (+Y)
+			"skybox/bottom.jpg", // Bottom (-Y)
+			"skybox/front.jpg", // Front (+Z)
+			"skybox/back.jpg"  // Back (-Z)
 		};
 		skyboxTexture = loadCubemap(faces);
 		createSkybox(skyboxVAO, skyboxVBO, skyboxEBO);
-
 	}
+
 
 	void GameEngine::Release()
 	{
@@ -420,7 +436,6 @@ namespace Ge
 		glfwSetCursorPosCallback(p_window, mouse_callback);
 		glfwSetInputMode(p_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide cursor for FPS-like movement
 
-
 		// Timers
 		double lag = 0.0;
 		double previous = glfwGetTime();
@@ -428,21 +443,19 @@ namespace Ge
 
 		glEnable(GL_DEPTH_TEST);
 
+		// Initialiser les positions des cubes
+		int gridSize = 10;
+		float spacing = 2.0f; // Espacement entre les cubes
+		std::vector<glm::vec3> cubePositions = initializeCubePositions(gridSize, spacing);
+
 		// Main loop
 		while (!glfwWindowShouldClose(p_window)) {
-
-			
-
 			float current = glfwGetTime();
 			double elapsed = current - previous;
 			previous = current;
 
 			lag += elapsed;
 			glfwPollEvents();
-
-			float red = (std::sin(current * 0.5f) + 1.f) / 2.f;
-			float green = (std::sin(current * 0.3f) + 1.f) / 2.f;
-			float blue = (std::sin(current * 0.7f) + 1.f) / 2.f;
 
 			while (lag >= SECONDS_PER_UPDATE)
 			{
@@ -451,7 +464,6 @@ namespace Ge
 				processInput(p_window, elapsed);
 				view = camera.GetViewMatrix();
 			}
-
 
 			// Clear the screen
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -474,42 +486,25 @@ namespace Ge
 			// Restore depth function
 			glDepthFunc(GL_LESS);
 
+			// Render the cubes
+			simpleShader.use();
+			simpleShader.setMat4("u_view", view);
+			simpleShader.setMat4("u_projection", projection);
 
-			// Render the triangle
-			{
-				// Activate the shader to use it for rendering
-				simpleShader.use();
+			glBindVertexArray(vao);
 
-				// Update model matrix for rotating the triangle on Z-axis
-				/*model = glm::rotate(
-					glm::mat4(1.f),
-					current * 8.f,
-					glm::vec3(0.f, 1.f, 0.f));
-
-
-				model = glm::rotate(
-					model,
-					current * 3.f,
-					glm::vec3(1.f, 0.f, 0.f));*/
-
-				// Set shader uniforms
+			for (const auto& position : cubePositions) {
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
 				simpleShader.setMat4("u_model", model);
-				simpleShader.setMat4("u_view", view);
-				simpleShader.setMat4("u_projection", projection);
-
-				// Bind the VAO that stores the triangle's vertex data and settings
-				glBindVertexArray(vao);
-
-				// Issue the draw command
-				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); // Change this if you want to draw multiple verticies
-
-				// Unbind the VAO
-				glBindVertexArray(0);
+				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 			}
+
+			glBindVertexArray(0);
 
 			// Rendering
 			mp_rendering_engine->Render(static_cast<float>(lag / SECONDS_PER_UPDATE));
 		}
 	}
+
 
 }
