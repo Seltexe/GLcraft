@@ -167,12 +167,18 @@ namespace Ge
 		};
 
 		unsigned int cubeIndices[] = {
-			0, 1, 2,  2, 3, 0,  // Back face
-			1, 5, 6,  6, 2, 1,  // Right face
-			5, 4, 7,  7, 6, 5,  // Front face
-			4, 0, 3,  3, 7, 4,  // Left face
-			3, 2, 6,  6, 7, 3,  // Top face
-			4, 5, 1,  1, 0, 4   // Bottom face
+			// Back face
+			2, 1, 0,   0, 3, 2,
+			// Right face
+			6, 5, 1,   1, 2, 6,
+			// Front face
+			7, 4, 5,   5, 6, 7,
+			// Left face
+			3, 0, 4,   4, 7, 3,
+			// Top face
+			6, 2, 3,   3, 7, 6,
+			// Bottom face
+			1, 5, 4,   4, 0, 1
 		};
 
 		glGenVertexArrays(1, &vao);
