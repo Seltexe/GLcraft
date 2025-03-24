@@ -114,7 +114,7 @@ namespace Ge
 		// Define the indices that represent how to draw the square using the vertices
 		unsigned int squareIndices[] = {
 		0, 1, 2, // Premier triangle
-		1, 3, 2  // Deuxième triangle
+		1, 3, 2  // Deuxiï¿½me triangle
 		};
 
 		// Generate a Vertex Array Object (VAO), Vertex Buffer Object (VBO),
@@ -155,24 +155,63 @@ namespace Ge
 	void createCube(unsigned int& vao, unsigned int& vbo, unsigned int& ebo)
 	{
 		float cubeVertices[] = {
-			// Positions          // Colors
-			-1.0f, -1.0f, -1.0f,  1.0f, 0.0f, 0.0f, // 0 - Red
-			 1.0f, -1.0f, -1.0f,  0.0f, 1.0f, 0.0f, // 1 - Green
-			 1.0f,  1.0f, -1.0f,  0.0f, 0.0f, 1.0f, // 2 - Blue
-			-1.0f,  1.0f, -1.0f,  1.0f, 1.0f, 0.0f, // 3 - Yellow
-			-1.0f, -1.0f,  1.0f,  1.0f, 0.0f, 1.0f, // 4 - Magenta
-			 1.0f, -1.0f,  1.0f,  0.0f, 1.0f, 1.0f, // 5 - Cyan
-			 1.0f,  1.0f,  1.0f,  1.0f, 1.0f, 1.0f, // 6 - White
-			-1.0f,  1.0f,  1.0f,  0.0f, 0.0f, 0.0f  // 7 - Black
+			// positions          // normals
+			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+			 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+			 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+			 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+			 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+			 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 		};
 
 		unsigned int cubeIndices[] = {
-			0, 1, 2,  2, 3, 0,  // Back face
-			1, 5, 6,  6, 2, 1,  // Right face
-			5, 4, 7,  7, 6, 5,  // Front face
-			4, 0, 3,  3, 7, 4,  // Left face
-			3, 2, 6,  6, 7, 3,  // Top face
-			4, 5, 1,  1, 0, 4   // Bottom face
+			// Back face
+			2, 1, 0,   0, 3, 2,
+			// Right face
+			6, 5, 1,   1, 2, 6,
+			// Front face
+			7, 4, 5,   5, 6, 7,
+			// Left face
+			3, 0, 4,   4, 7, 3,
+			// Top face
+			6, 2, 3,   3, 7, 6,
+			// Bottom face
+			1, 5, 4,   4, 0, 1
 		};
 
 		glGenVertexArrays(1, &vao);
@@ -184,8 +223,8 @@ namespace Ge
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 		// Position attribute
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -198,6 +237,7 @@ namespace Ge
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
+
 
 	unsigned int loadCubemap(std::vector<std::string> faces) {
 		unsigned int textureID;
@@ -230,7 +270,7 @@ namespace Ge
 
 	void createSkybox(unsigned int& skyboxVAO, unsigned int& skyboxVBO, unsigned int& skyboxEBO) {
 		float skyboxVertices[] = {
-			// Positions
+			// positions          
 			-1.0f,  1.0f, -1.0f,
 			-1.0f, -1.0f, -1.0f,
 			 1.0f, -1.0f, -1.0f,
@@ -285,14 +325,10 @@ namespace Ge
 
 		glGenVertexArrays(1, &skyboxVAO);
 		glGenBuffers(1, &skyboxVBO);
-		glGenBuffers(1, &skyboxEBO);
 
 		glBindVertexArray(skyboxVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
@@ -300,7 +336,18 @@ namespace Ge
 		glBindVertexArray(0);
 	}
 
-
+	std::vector<glm::vec3> initializeCubePositions(int gridSize, float spacing) {
+		std::vector<glm::vec3> positions;
+		for (int x = 0; x < gridSize; ++x) {
+			for (int z = 0; z < gridSize; ++z) {
+				for (int y = 0; y < gridSize; ++y)
+				{
+					positions.emplace_back(x * spacing, y * spacing, z * spacing);
+				}
+			}
+		}
+		return positions;
+	}
 
 	void GameEngine::Initialize(const SGameEngineCreateInfo& _GameEngineCreateInfo)
 	{
@@ -332,19 +379,32 @@ namespace Ge
 
 		std::cout << "Game Engine initialized." << std::endl;
 
-		
+		// Activer le culling de faces
+		//glEnable(GL_CULL_FACE);
+		//glCullFace(GL_BACK); // Cull les faces arriï¿½re
+		//glFrontFace(GL_CCW); // Les faces avant sont dï¿½finies dans le sens antihoraire
+
+		// Simple triangle
+		// Create triangle
+
 		createCube(vao, vbo, ebo);
 
 		// Initialize shader
 		simpleShader.init(
-			FileManager::read("shaders/simple.vs"), // Vertex shader source
-			FileManager::read("shaders/simple.fs")  // Fragment shader source
+			FileManager::read("shaders/reflect.vs"), // Vertex shader source
+			FileManager::read("shaders/reflect.fs")  // Fragment shader source
 		);
 
 		skyboxShader.init(
-			FileManager::read("shaders/skybox.vs"), // Vertex shader source
-			FileManager::read("shaders/skybox.fs")  // Fragment shader source
+			FileManager::read("shaders/reflect.vs"), // Vertex shader source
+			FileManager::read("shaders/reflect.fs")  // Fragment shader source
 		);
+
+		simpleShader.use();
+		simpleShader.setInt("skybox", 0);
+
+		skyboxShader.use();
+		skyboxShader.setInt("skybox", 0);
 
 		// Get screen dimensions
 		GLFWwindow* p_window = mp_rendering_engine->GetRenderer()->GetWindow()->GetHandle();
@@ -373,21 +433,20 @@ namespace Ge
 			100.0f                                    // Far clipping plane
 		);
 
-
 		// skybox
 
 		std::vector<std::string> faces = {
-			"skybox/px.png", // Right (+X)
-			"skybox/nx.png", // Left (-X)
-			"skybox/py.png", // Top (+Y)
-			"skybox/ny.png", // Bottom (-Y)
-			"skybox/pz.png", // Front (+Z)
-			"skybox/nz.png"  // Back (-Z)
+			"skybox/right.jpg", // Right (+X)
+			"skybox/left.jpg", // Left (-X)
+			"skybox/top.jpg", // Top (+Y)
+			"skybox/bottom.jpg", // Bottom (-Y)
+			"skybox/front.jpg", // Front (+Z)
+			"skybox/back.jpg"  // Back (-Z)
 		};
 		skyboxTexture = loadCubemap(faces);
 		createSkybox(skyboxVAO, skyboxVBO, skyboxEBO);
-
 	}
+
 
 	void GameEngine::Release()
 	{
@@ -418,7 +477,6 @@ namespace Ge
 		glfwSetCursorPosCallback(p_window, mouse_callback);
 		glfwSetInputMode(p_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // Hide cursor for FPS-like movement
 
-
 		// Timers
 		double lag = 0.0;
 		double previous = glfwGetTime();
@@ -426,21 +484,19 @@ namespace Ge
 
 		glEnable(GL_DEPTH_TEST);
 
+		// Initialiser les positions des cubes
+		int gridSize = 10;
+		float spacing = 2.0f; // Espacement entre les cubes
+		std::vector<glm::vec3> cubePositions = initializeCubePositions(gridSize, spacing);
+
 		// Main loop
 		while (!glfwWindowShouldClose(p_window)) {
-
-			
-
 			float current = glfwGetTime();
 			double elapsed = current - previous;
 			previous = current;
 
 			lag += elapsed;
 			glfwPollEvents();
-
-			float red = (std::sin(current * 0.5f) + 1.f) / 2.f;
-			float green = (std::sin(current * 0.3f) + 1.f) / 2.f;
-			float blue = (std::sin(current * 0.7f) + 1.f) / 2.f;
 
 			while (lag >= SECONDS_PER_UPDATE)
 			{
@@ -450,18 +506,54 @@ namespace Ge
 				view = camera.GetViewMatrix();
 			}
 
-
 			// Clear the screen
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+#pragma region Cube_Rendering
+			// Render the cubes
+			//simpleShader.setMat4("u_view", view);
+			//simpleShader.setMat4("u_projection", projection);
+
+			//glBindVertexArray(vao);
+
+			//for (const auto& position : cubePositions) {
+			//	glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
+			//	//simpleShader.setMat4("u_model", model);
+
+			//	simpleShader.setMat4("model", model);
+			//	simpleShader.setMat4("view", view);
+			//	simpleShader.setMat4("projection", projection);
+			//	simpleShader.setVec3("cameraPos", camera.Position);
+			//	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+			//}
+
+			//glBindVertexArray(0);
+
+			simpleShader.use();
+			glm::mat4 model = glm::mat4(1.0f);
+			glm::mat4 view = camera.GetViewMatrix();
+			//glm::mat4 projection = glm::perspective(glm::radians(camera), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+			simpleShader.setMat4("model", model);
+			simpleShader.setMat4("view", view);
+			simpleShader.setMat4("projection", projection);
+			simpleShader.setVec3("cameraPos", camera.Position);
+			// cubes
+			glBindVertexArray(vao);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(0);
+#pragma endregion
+
+#pragma region Skybox_Rendering
 			// Disable depth writing
 			glDepthFunc(GL_LEQUAL);
 
 			skyboxShader.use();
-			skyboxShader.setInt("skybox", 0);
-			skyboxShader.setMat4("u_view", glm::mat4(glm::mat3(view))); // Remove translation
-			skyboxShader.setMat4("u_projection", projection);
+
+			skyboxShader.setMat4("view", glm::mat4(glm::mat3(view))); // Remove translation
+			skyboxShader.setMat4("projection", projection);
 
 			glBindVertexArray(skyboxVAO);
 			glActiveTexture(GL_TEXTURE0);
@@ -471,43 +563,13 @@ namespace Ge
 
 			// Restore depth function
 			glDepthFunc(GL_LESS);
+#pragma endregion
 
-
-			// Render the triangle
-			{
-				// Activate the shader to use it for rendering
-				simpleShader.use();
-
-				// Update model matrix for rotating the triangle on Z-axis
-				/*model = glm::rotate(
-					glm::mat4(1.f),
-					current * 8.f,
-					glm::vec3(0.f, 1.f, 0.f));
-
-
-				model = glm::rotate(
-					model,
-					current * 3.f,
-					glm::vec3(1.f, 0.f, 0.f));*/
-
-				// Set shader uniforms
-				simpleShader.setMat4("u_model", model);
-				simpleShader.setMat4("u_view", view);
-				simpleShader.setMat4("u_projection", projection);
-
-				// Bind the VAO that stores the triangle's vertex data and settings
-				glBindVertexArray(vao);
-
-				// Issue the draw command
-				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); // Change this if you want to draw multiple verticies
-
-				// Unbind the VAO
-				glBindVertexArray(0);
-			}
 
 			// Rendering
 			mp_rendering_engine->Render(static_cast<float>(lag / SECONDS_PER_UPDATE));
 		}
 	}
+
 
 }
